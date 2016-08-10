@@ -49,19 +49,37 @@ console.log(func('things'));
 
 ```typescript
 export function x(
-    name: string,
-    attributes: {
-      [name: string]:
-        string |
-        Parameter |
-        Array<string | Parameter>
-    },
-    children?: Array<string | Parameter | XTree | CData>
+  name: string,
+  attributes: {
+    [name: string]:
+      string |
+      Parameter |
+      Array<string | Parameter>
+  },
+  children: Array<string | Parameter | XTree | CData>
+): XTree
+```
+
+Overloads:
+
+```typescript
+export function x(
+  name: string,
+  attributes: {
+    [name: string]:
+      string |
+      Parameter |
+      Array<string | Parameter>
+  }
 ): XTree
 
 export function x(
-    name: string,
-    children?: Array<string | Parameter | XTree | CData>
+  name: string,
+  children: Array<string | Parameter | XTree | CData>
+): XTree
+
+export function x(
+  name: string
 ): XTree
 ```
 
@@ -78,12 +96,12 @@ export function param(
 
 ```typescript
 export function compile(
-    tree: XTree,
-    params: Array<Parameter>,
-    opts?: {
-        declaration?: boolean,
-        indent?: number,
-    }
+  tree: XTree,
+  params: Array<Parameter>,
+  opts?: {
+    declaration?: boolean,
+    indent?: number,
+  }
 ): Function
 ```
 
