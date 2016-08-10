@@ -1,91 +1,75 @@
-export class XTree {
-    constructor(
-        public name: string,
-        public attributes: { [name: string]: AttributeValue },
-        public children: Array<Child>) {
+"use strict";
+class XTree {
+    constructor(name, attributes, children) {
+        this.name = name;
+        this.attributes = attributes;
+        this.children = children;
     }
 }
-
-export class Parameter {
-    constructor(public name: string) {}
+exports.XTree = XTree;
+class Parameter {
+    constructor(name) {
+        this.name = name;
+    }
 }
-
-export class CData {
-    constructor(public children: Array<string | Parameter>) {}
+exports.Parameter = Parameter;
+class CData {
+    constructor(children) {
+        this.children = children;
+    }
 }
-
-export type AttributeValue = string | Parameter | Array<string | Parameter>;
-export type Child = string | Parameter | XTree | CData;
-
-export function x(
-    name: string,
-    attributes?: { [name: string]: AttributeValue } | Array<Child>,
-    children?: Array<Child>): XTree {
-
+exports.CData = CData;
+function x(name, attributes, children) {
     if (attributes && Array.isArray(attributes)) {
-        children = attributes as Array<Child>;
+        children = attributes;
         attributes = null;
     }
-
-    return new XTree(name, (attributes as any) || null, children || null);
+    return new XTree(name, attributes || null, children || null);
 }
-
-export function compile(
-    tree: XTree,
-    params: Array<Parameter>,
-    opts?: {
-        declaration?: boolean,
-        indent?: number,
-    }): Function {
-
+exports.x = x;
+function compile(tree, params, opts) {
     opts = Object.assign({
         declaration: true,
         indent: 0,
     }, opts);
-
     const tokens = [];
     flatten(tokens, opts.indent, tree);
-
     if (opts.declaration) {
         if (!opts.indent) {
             tokens.unshift('\n');
         }
         tokens.unshift('<?xml version="1.0" encoding="UTF-8"?>');
     }
-
     concat(tokens);
-
     const args = [null].concat(params.map(p => p.name));
-    args.push(
-        'return ' + JSON.stringify(tokens[0]) +
+    args.push('return ' + JSON.stringify(tokens[0]) +
         tokens.reduce((lines, token, i) => {
             if (i) {
                 lines += ' +\n';
                 if (token instanceof Parameter) {
                     lines += token.name;
-                } else {
+                }
+                else {
                     lines += JSON.stringify(token);
                 }
             }
             return lines;
-        }, '')  +
+        }, '') +
         ';');
-
     // variadic constructor shenanigans
     const Factory = Function.bind.apply(Function, args);
     return new Factory();
 }
-
-export function param(name: string): Parameter {
+exports.compile = compile;
+function param(name) {
     // TODO validate identifier names
     return new Parameter(name);
 }
-
-export const cdata = function cdata() {
+exports.param = param;
+exports.cdata = function cdata() {
     return new CData([].slice.call(arguments));
-} as (...params: Array<string | Parameter>) => CData;
-
-function flatten(destination: Array<string | Parameter>, indent: number, tree: XTree): void {
+};
+function flatten(destination, indent, tree) {
     let prefix = '';
     if (indent > 0) {
         prefix = '\n';
@@ -94,20 +78,15 @@ function flatten(destination: Array<string | Parameter>, indent: number, tree: X
         }
         destination.push(prefix);
     }
-
     destination.push(`<${tree.name}`);
-
     const keys = tree.attributes && Object.keys(tree.attributes);
     if (keys && keys.length) {
         for (let i = 0; i < keys.length; i++) {
-
             destination.push(` ${keys[i]}="`);
-
-            let values = tree.attributes[keys[i]] as Array<string | Parameter>;
+            let values = tree.attributes[keys[i]];
             if (!Array.isArray(values)) {
-                values = [values as any as string | Parameter];
+                values = [values];
             }
-
             const before = destination.length;
             for (let j = 0; j < values.length; j++) {
                 const value = values[j];
@@ -116,25 +95,22 @@ function flatten(destination: Array<string | Parameter>, indent: number, tree: X
                     destination.push(values[j]);
                 }
             }
-
             if (before === destination.length) {
                 // we didn't push anything get rid of attribute name
                 destination.pop();
-            } else {
+            }
+            else {
                 destination.push('"');
             }
         }
     }
-
     const children = tree.children;
     if (!(children && children.length)) {
         // self closing
         destination.push('/>');
         return;
     }
-
     destination.push('>');
-
     let elementChildren = false;
     const before = destination.length;
     for (let i = 0; i < children.length; i++) {
@@ -142,12 +118,12 @@ function flatten(destination: Array<string | Parameter>, indent: number, tree: X
         if (child instanceof XTree) {
             elementChildren = true;
             flatten(destination, indent + 1, child);
-
             if (!prefix) {
                 // gonna need this now
                 prefix = '\n';
             }
-        } else if (child instanceof CData) {
+        }
+        else if (child instanceof CData) {
             destination.push('<![CDATA[');
             for (let j = 0; j < child.children.length; j++) {
                 const c = child.children[j];
@@ -156,37 +132,38 @@ function flatten(destination: Array<string | Parameter>, indent: number, tree: X
                 }
             }
             destination.push(']]>');
-        } else if (typeof child === 'string' || (child && child instanceof Parameter)) {
+        }
+        else if (typeof child === 'string' || (child && child instanceof Parameter)) {
             destination.push(child);
         }
     }
-
     if (before === destination.length) {
         // change to self closing if we didn't actually push any children
         destination[before - 1] = '/>';
-    } else {
+    }
+    else {
         if (elementChildren) {
             destination.push(prefix);
         }
         destination.push(`</${tree.name}>`);
     }
 }
-
 // concatenates consecutive strings
-function concat<T>(items: Array<string | T>): void {
+function concat(items) {
     let i = 1;
     while (i < items.length) {
         const prev = items[i - 1];
         const curr = items[i];
-        const isString = typeof curr === 'string'
-
+        const isString = typeof curr === 'string';
         if (typeof prev === 'string' && isString) {
             items[i - 1] = prev + curr;
             items.splice(i, 1);
             continue;
-        } else {
+        }
+        else {
             // skip 2 spots if current thing is not a string
             i += isString ? 1 : 2;
         }
     }
 }
+//# sourceMappingURL=index.js.map

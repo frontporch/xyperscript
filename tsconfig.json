@@ -4,7 +4,8 @@
         "removeComments": false,
         "module": "commonjs",
         "sourceMap": true,
-        "moduleResolution": "classic"
+        "moduleResolution": "classic",
+		"declaration": true
     },
     "exclude": [
         "node_modules",

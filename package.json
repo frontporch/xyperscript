@@ -2,13 +2,14 @@
   "name": "xyperscript",
   "version": "0.1.0",
   "description": "hyperscript for xml",
-  "main": "index.js",
+  "main": "./dist/src/index.js",
   "scripts": {
     "test": "mocha dist/test/",
     "build": "tsc --outDir dist"
   },
   "author": "Cameron Jordan",
   "license": "MIT",
+  "typings": "./dist/src/index.d.ts",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.0.2",
