@@ -293,5 +293,21 @@ describe('xyperscript', () => {
             func = compile(x('foo'), [], { indent: 1, declaration: false });
             expect(func()).to.eql('\n\t<foo/>');
         });
+
+        it('example', () => {
+            const a = param('a');
+            const tree =
+            x('foo', [
+                x('bar', { things: a }),
+                x('bop', [ a ]),
+                x('baz', [
+                    x('stuff', [ a ]),
+                    x('things', [ cdata('<', a, '>') ]),
+                ]),
+            ]);
+            const func = compile(tree, [a]);
+            console.log(func('stuff'));
+            console.log(func('things'));
+        });
     });
 });

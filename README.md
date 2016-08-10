@@ -6,14 +6,15 @@ hyperscript for xml
 const a = param('a');
 const tree =
   x('foo', [
-      x('bar', { things: a }),
-      x('bop', [ a ]),
-      x('baz', [
-          x('stuff', [ a ]),
-          x('things', [ a ]),
-      ]),
+    x('bar', { things: a }),
+    x('bop', [ a ]),
+    x('baz', [
+      x('stuff', [ a ]),
+      x('things', [ cdata('<', a, '>') ]),
+    ]),
   ]);
 const func = compile(tree, [a]);
+
 console.log(func('stuff'));
 //<?xml version="1.0" encoding="UTF-8"?>
 //<foo>
@@ -21,7 +22,18 @@ console.log(func('stuff'));
 //  <bop>stuff</bop>
 //  <baz>
 //    <stuff>stuff</stuff>
-//    <things>stuff</things>
+//    <things><![CDATA[<stuff>]]></things>
+//  </baz>
+//</foo>
+
+console.log(func('things'));
+//<?xml version="1.0" encoding="UTF-8"?>
+//<foo>
+//  <bar things="things"/>
+//  <bop>things</bop>
+//  <baz>
+//    <stuff>things</stuff>
+//    <things><![CDATA[<things>]]></things>
 //  </baz>
 //</foo>
 ```
