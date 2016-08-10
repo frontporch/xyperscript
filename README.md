@@ -60,7 +60,7 @@ export function x(
 ): XTree
 ```
 
-Overloads:
+The `x` function is the counterpart of the `h` function from [hyperscript](https://github.com/dominictarr/hyperscript). Only the first parameter is required.
 
 ```typescript
 export function x(
@@ -81,6 +81,30 @@ export function x(
 export function x(
   name: string
 ): XTree
+```
+
+The `x` function will ignore all "falsy" values except the empty string.
+
+```javascript
+compile(
+  x('a', [
+    x('b', [ '' ]),
+    x('b', [ false ]),
+    x('b', [ 0 ]),
+    x('b', [ null ]),
+    x('b', [ undefined ]),
+    x('b', [ NaN ]),
+  ]),
+  [],
+  { declaration: false })()
+//<a>
+//  <b></b>
+//  <b/>
+//  <b/>
+//  <b/>
+//  <b/>
+//  <b/>
+//</a>
 ```
 
 ### `param`
