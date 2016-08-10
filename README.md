@@ -82,3 +82,7 @@ export function cdata(
   ...params: Array<string | Parameter>
 ): CData
 ```
+
+## LICENSE
+
+MIT
