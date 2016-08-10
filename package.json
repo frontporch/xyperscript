@@ -1,0 +1,18 @@
+{
+  "name": "xyperscript",
+  "version": "0.1.0",
+  "description": "hyperscript for xml",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha dist/test/",
+    "build": "tsc --outDir dist"
+  },
+  "author": "Cameron Jordan",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.0.2",
+    "rewire": "^2.5.2",
+    "typescript": "^1.8.10"
+  }
+}
