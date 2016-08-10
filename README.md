@@ -4,20 +4,20 @@ hyperscript for xml
 
 ```javascript
 const a = param('a');
-const func = compile(
-    x('foo', [
-        x('bar', { a: a }),
-        x('bop', [ a ]),
-        x('baz', [
-            x('stuff', [a]),
-            x('things', [a]),
-        ]),
-    ]),
-    [a]);
+const tree =
+  x('foo', [
+      x('bar', { things: a }),
+      x('bop', [ a ]),
+      x('baz', [
+          x('stuff', [ a ]),
+          x('things', [ a ]),
+      ]),
+  ]);
+const func = compile(tree, [a]);
 console.log(func('stuff'));
 //<?xml version="1.0" encoding="UTF-8"?>
 //<foo>
-//  <bar a="stuff"/>
+//  <bar things="stuff"/>
 //  <bop>stuff</bop>
 //  <baz>
 //    <stuff>stuff</stuff>
