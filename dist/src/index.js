@@ -32,6 +32,7 @@ function compile(tree, params, opts) {
         declaration: true,
         indent: 0,
     }, opts);
+    const encode = opts.encode || (s => s);
     const tokens = [];
     flatten(tokens, opts.indent, tree);
     if (opts.declaration) {
@@ -42,7 +43,7 @@ function compile(tree, params, opts) {
     }
     concat(tokens);
     const args = [null].concat(params.map(p => p.name));
-    args.push('return ' + JSON.stringify(tokens[0]) +
+    args.push('return ' + JSON.stringify(encode(tokens[0])) +
         tokens.reduce((lines, token, i) => {
             if (i) {
                 lines += ' +\n';
@@ -50,7 +51,7 @@ function compile(tree, params, opts) {
                     lines += token.name;
                 }
                 else {
-                    lines += JSON.stringify(token);
+                    lines += JSON.stringify(encode(token));
                 }
             }
             return lines;

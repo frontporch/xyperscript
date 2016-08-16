@@ -24,6 +24,7 @@ export declare function x(name: string, attributes?: {
 export declare function compile(tree: XTree, params: Array<Parameter>, opts?: {
     declaration?: boolean;
     indent?: number;
+    encode?: (value: string) => string;
 }): Function;
 export declare function param(name: string): Parameter;
 export declare const cdata: (...params: (string | Parameter)[]) => CData;

@@ -36,6 +36,7 @@ export function compile(
     opts?: {
         declaration?: boolean,
         indent?: number,
+        encode?: (value: string) => string,
     }): Function {
 
     opts = Object.assign({
@@ -43,6 +44,7 @@ export function compile(
         indent: 0,
     }, opts);
 
+    const encode = opts.encode || (s => s);
     const tokens = [];
     flatten(tokens, opts.indent, tree);
 
@@ -57,14 +59,14 @@ export function compile(
 
     const args = [null].concat(params.map(p => p.name));
     args.push(
-        'return ' + JSON.stringify(tokens[0]) +
+        'return ' + JSON.stringify(encode(tokens[0])) +
         tokens.reduce((lines, token, i) => {
             if (i) {
                 lines += ' +\n';
                 if (token instanceof Parameter) {
                     lines += token.name;
                 } else {
-                    lines += JSON.stringify(token);
+                    lines += JSON.stringify(encode(token));
                 }
             }
             return lines;

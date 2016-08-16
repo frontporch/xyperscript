@@ -294,6 +294,27 @@ describe('xyperscript', () => {
             expect(func()).to.eql('\n\t<foo/>');
         });
 
+        it('optionally encodes non-variables', () => {
+            let func: Function;
+
+            const expected = [
+                '<foo stuff="a">',
+                '\t<bar><![CDATA[things]]></bar>',
+                '</foo>',
+            ].join('\n');
+
+            func = compile(x('foo', { stuff: 'a' }, [x('bar', [cdata('things')])]), [], { declaration: false, encode: encodeURIComponent });
+            // paranoia, yes
+            expect(decodeURIComponent(func())).to.eql(expected);
+            expect(func()).to.eql(encodeURIComponent(expected));
+
+            const things = param('things');
+            func = compile(x('foo', { stuff: 'a' }, [x('bar', [cdata(things)])]), [things], { declaration: false, encode: encodeURIComponent });
+            // paranoia, yes
+            expect(decodeURIComponent(func('things'))).to.eql(expected);
+            expect(func('things')).to.eql(encodeURIComponent(expected));
+        });
+
         it('example', () => {
             const a = param('a');
             const tree =
