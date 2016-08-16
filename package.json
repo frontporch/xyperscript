@@ -1,6 +1,6 @@
 {
   "name": "xyperscript",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "hyperscript for xml",
   "main": "./dist/src/index.js",
   "scripts": {
@@ -10,6 +10,7 @@
   "author": "Cameron Jordan",
   "license": "MIT",
   "typings": "./dist/src/index.d.ts",
+  "repository": "frontporch/xyperscript",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.0.2",
